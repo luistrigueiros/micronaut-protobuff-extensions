@@ -11,16 +11,13 @@ import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
 @Singleton
-public class ProtobuffCodec implements MediaTypeCodec {
-
-    private static final ConcurrentHashMap<Class<?>, Method> methodCache = new ConcurrentHashMap<>();
+public class ProtobufferCodec implements MediaTypeCodec {
 
     private final ExtensionRegistry extensionRegistry = ExtensionRegistry.newInstance();
     /**
@@ -46,11 +43,10 @@ public class ProtobuffCodec implements MediaTypeCodec {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T decode(Argument<T> type, InputStream inputStream) throws CodecException {
         try {
-            Class<? extends Message> clazz = (Class<? extends Message>) type.getType();
-            Message.Builder builder = getMessageBuilder(clazz);
+            Message.Builder builder = getBuilder(type)
+                    .orElseThrow(() -> new CodecException("Unable to create builder"));
             if (type.hasTypeVariables()) {
                 throw new IllegalStateException("Not implemented yet!");
             } else {
@@ -60,6 +56,12 @@ public class ProtobuffCodec implements MediaTypeCodec {
         } catch (Exception e) {
             throw new CodecException("Error decoding Protobuff stream for type [" + type.getName() + "]: " + e.getMessage());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> Optional<Message.Builder> getBuilder(Argument<T> type) {
+        Class<? extends Message> clazz = (Class<? extends Message>) type.getType();
+        return ProtobufferBuilderCreator.getMessageBuilder(clazz);
     }
 
     @Override
@@ -84,18 +86,5 @@ public class ProtobuffCodec implements MediaTypeCodec {
     @Override
     public <T> ByteBuffer encode(T object, ByteBufferFactory allocator) throws CodecException {
         return allocator.copiedBuffer(encode(object));
-    }
-
-    /**
-     * Create a new {@code Message.Builder} instance for the given class.
-     * <p>This method uses a ConcurrentHashMap for caching method lookups.
-     */
-    private static Message.Builder getMessageBuilder(Class<? extends Message> clazz) throws Exception {
-        Method method = methodCache.get(clazz);
-        if (method == null) {
-            method = clazz.getMethod("newBuilder");
-            methodCache.put(clazz, method);
-        }
-        return (Message.Builder) method.invoke(clazz);
     }
 }

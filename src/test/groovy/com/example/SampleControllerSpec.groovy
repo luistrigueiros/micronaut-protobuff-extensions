@@ -4,7 +4,7 @@ import com.example.wire.Example
 import io.micronaut.context.ApplicationContext
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.codec.ProtobuffCodec
+import io.micronaut.http.codec.ProtobufferCodec
 import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.AutoCleanup
 import spock.lang.Shared
@@ -31,7 +31,7 @@ class SampleControllerSpec extends Specification {
     void  "near by Dublin should be Dublin"() {
         when:
             HttpRequest request = HttpRequest.POST('/nearby', Constant.DUBLIN)
-                    .contentType(ProtobuffCodec.PROTOBUFFER_ENCODED_TYPE)
+                    .contentType(ProtobufferCodec.PROTOBUFFER_ENCODED_TYPE)
             Example.GeoPoint city  = client.toBlocking().retrieve(request, Example.GeoPoint)
         then:
             Constant.DUBLIN == city
