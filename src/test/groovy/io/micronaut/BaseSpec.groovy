@@ -1,12 +1,21 @@
 package io.micronaut
 
 import com.google.protobuf.Message
-import groovy.transform.CompileStatic
+import io.micronaut.context.ApplicationContext
 import io.micronaut.http.codec.ProtobufferCodec
+import io.micronaut.runtime.server.EmbeddedServer
 import org.apache.hc.client5.http.fluent.Request
+import spock.lang.AutoCleanup
+import spock.lang.Shared
+import spock.lang.Specification
 
-@CompileStatic
-trait TestUtiTrait {
+abstract class BaseSpec extends Specification {
+    @Shared
+    @AutoCleanup
+    EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)
+
+
+
     byte[] getMessage(String url, Class aClass) {
         Request.Get(url)
                 .addHeader("Content-Type", ProtobufferCodec.PROTOBUFFER_ENCODED)
