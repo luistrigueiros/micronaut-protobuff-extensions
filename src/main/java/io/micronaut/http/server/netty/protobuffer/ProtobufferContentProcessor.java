@@ -2,8 +2,10 @@ package io.micronaut.http.server.netty.protobuffer;
 
 import com.google.protobuf.Message;
 import io.micronaut.core.async.subscriber.TypedSubscriber;
+import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.codec.ProtobufferBuilderCreator;
+import io.micronaut.http.codec.ProtobufferCodec;
 import io.micronaut.http.server.HttpServerConfiguration;
 import io.micronaut.http.server.netty.AbstractHttpContentProcessor;
 import io.micronaut.http.server.netty.NettyHttpRequest;
@@ -16,8 +18,9 @@ import org.reactivestreams.Subscription;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 public class ProtobufferContentProcessor extends AbstractHttpContentProcessor<Message> {
     /**
@@ -32,6 +35,7 @@ public class ProtobufferContentProcessor extends AbstractHttpContentProcessor<Me
      *
      */
     private Message message;
+
     /**
      * @param nettyHttpRequest The {@link NettyHttpRequest}
      * @param configuration    The {@link HttpServerConfiguration}
@@ -64,12 +68,37 @@ public class ProtobufferContentProcessor extends AbstractHttpContentProcessor<Me
             Class targetType = typeArgument.getType();
 
             Class<? extends Message> clazz = (Class<? extends Message>) targetType;
-            builder = ProtobufferBuilderCreator.getMessageBuilder(clazz)
-                    .orElseThrow(() -> new IllegalStateException("Unable to create message builder!"));
+            Optional<Message.Builder> messageBuilder = ProtobufferBuilderCreator.getMessageBuilder(clazz);
+            if (!messageBuilder.isPresent()) {
+                subscriber.onError(new IllegalStateException("Unable to create message builder!"));
+                return;
+            }
+            builder = messageBuilder.get();
         } else {
-            throw new IllegalArgumentException("This is not handled yet!");
+            if (!nettyHttpRequest.getHeaders().contains(ProtobufferCodec.X_PROTOBUF_MESSAGE_HEADER)) {
+                buildMissingRequiredHeaderError(subscriber);
+                return;
+            }
+            String fullyQualifiedType = nettyHttpRequest.getHeaders().get(ProtobufferCodec.X_PROTOBUF_MESSAGE_HEADER);
+            Optional<Class> aClass = ClassUtils.forName(fullyQualifiedType, null);
+            if (!aClass.isPresent()) {
+                subscriber.onError(new IllegalArgumentException(format("The given message type[%s]  is not found", fullyQualifiedType)));
+                return;
+            }
+            Optional<Message.Builder> messageBuilder = ProtobufferBuilderCreator.getMessageBuilder(aClass.get());
+            if (!messageBuilder.isPresent()) {
+                subscriber.onError(new IllegalStateException("Unable to create message builder!"));
+                return;
+            }
+            builder = messageBuilder.get();
         }
         super.doOnSubscribe(subscription, subscriber);
+    }
+
+    private static void buildMissingRequiredHeaderError(Subscriber<? super Message> subscriber) {
+        String mgs = format("Need the HTTP Header[%s] when the request in untyped", ProtobufferCodec.X_PROTOBUF_MESSAGE_HEADER);
+        IllegalArgumentException exception = new IllegalArgumentException(mgs);
+        subscriber.onError(exception);
     }
 
     @Override

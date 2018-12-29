@@ -1,32 +1,41 @@
 package io.micronaut
 
 import com.example.wire.Example
-import io.micronaut.Constant
 import io.micronaut.context.ApplicationContext
-import io.micronaut.http.codec.ProtobufferCodec
 import io.micronaut.runtime.server.EmbeddedServer
-import org.apache.hc.client5.http.fluent.Request
 import spock.lang.AutoCleanup
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
-class SimpleHttpGetSpec extends Specification {
+class SimpleHttpGetSpec extends Specification implements TestUtiTrait {
     @Shared
     @AutoCleanup
     EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)
 
-    void "sample city should be dublin"() {
-        when:
-            Example.GeoPoint city  = Example.GeoPoint.parseFrom(get())
-        then:
-        Constant.DUBLIN == city
+    @Ignore
+    @Unroll
+    void "sample city should be dublin/using sample controller"(String url) {
+        when:'The message is requested from the sever=[#url]'
+            def response = getMessage(url, Example.GeoPoint.class)
+        and:'The message is parser'
+            Example.GeoPoint city  = Example.GeoPoint.parseFrom(response)
+        then:'Should be Dublin'
+            Constant.DUBLIN == city
+        where:
+            url = embeddedServer.getURL().toString() + '/city'
     }
 
-    private byte[] get() {
-        Request.Get(embeddedServer.getURL().toString() + '/city')
-                .addHeader("Content-Type", ProtobufferCodec.PROTOBUFFER_ENCODED)
-                .execute()
-                .returnContent()
-                .asBytes()
+    @Unroll
+    void "sample city should be dublin/using programatic controller controller"(String url) {
+        when:'The message is requested from the sever=[#url]'
+            def response = getMessage(url, Example.GeoPoint.class)
+        and:'The message is parser'
+            Example.GeoPoint city  = Example.GeoPoint.parseFrom(response)
+        then:'Should be Dublin'
+            Constant.DUBLIN == city
+        where:
+            url = embeddedServer.getURL().toString() + '/town'
     }
 }

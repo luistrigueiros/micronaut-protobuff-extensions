@@ -24,7 +24,11 @@ public class ProtobufferCodec implements MediaTypeCodec {
      * Protobuffer encoded data: application/x-protobuf.
      */
     public static final String PROTOBUFFER_ENCODED = "application/x-protobuf";
-
+    /**
+     * This Header is to say the fully qualified name of the message builder to use.
+     * This is needed when the request is untyped
+     */
+    public static final String X_PROTOBUF_MESSAGE_HEADER = "X-Protobuf-Message";
     /**
      * Protobuffer encoded data: application/x-www-form-urlencoded.
      */
