@@ -45,8 +45,10 @@ dependencies {
     testCompile "io.micronaut:micronaut-inject-java"
     testCompile "org.hamcrest:hamcrest-all:1.3"
     testCompile 'org.apache.httpcomponents.client5:httpclient5-fluent:5.0-beta3'
-    testRuntime 'org.slf4j:jcl104-over-slf4j:1.5.11'    
-
+    testRuntime 'org.slf4j:jcl104-over-slf4j:1.5.11'
+    testCompile( 'com.athaydes:spock-reports:1.6.1' ) {
+        transitive = false 
+    }
     //protobuf
     compile "com.google.protobuf:protobuf-java:$protobufVersion"
     compile "com.google.protobuf:protobuf-java-util:$protobufVersion"
