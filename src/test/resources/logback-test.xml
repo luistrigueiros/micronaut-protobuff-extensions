@@ -13,5 +13,6 @@
     </root>
 
     <logger name="io.micronaut.http.client" level="TRACE"/>
+    <logger name="org.apache.commons.logging.simplelog.log.org.apache.http" level="TRACE"/>
 
 </configuration>
