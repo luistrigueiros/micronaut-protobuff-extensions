@@ -1,6 +1,8 @@
-package com.example
+package io.micronaut
 
 import com.example.wire.Example
+import com.google.protobuf.Message
+import io.micronaut.Constant
 import io.micronaut.context.ApplicationContext
 import io.micronaut.http.codec.ProtobufferCodec
 import io.micronaut.runtime.server.EmbeddedServer
@@ -9,21 +11,22 @@ import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
-class SimpleHttpGetSpec extends Specification {
+class SimpleHttpPostSpec extends Specification {
     @Shared
     @AutoCleanup
     EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)
 
-    void "sample city should be dublin"() {
+    void "near by Dublin should be Dublin"() {
         when:
-            Example.GeoPoint city  = Example.GeoPoint.parseFrom(get())
+            Example.GeoPoint city = Example.GeoPoint.parseFrom(post(Constant.DUBLIN))
         then:
             Constant.DUBLIN == city
     }
 
-    private byte[] get() {
-        Request.Get(embeddedServer.getURL().toString() + '/city')
+    private byte[] post(Message message) {
+        return Request.Post(embeddedServer.getURL().toString() + '/nearby')
                 .addHeader("Content-Type", ProtobufferCodec.PROTOBUFFER_ENCODED)
+                .bodyByteArray(message.toByteArray())
                 .execute()
                 .returnContent()
                 .asBytes()

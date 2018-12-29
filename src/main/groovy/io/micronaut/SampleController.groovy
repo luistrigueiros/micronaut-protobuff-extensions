@@ -1,4 +1,4 @@
-package com.example
+package io.micronaut
 
 import com.example.wire.Example
 import groovy.transform.CompileStatic
