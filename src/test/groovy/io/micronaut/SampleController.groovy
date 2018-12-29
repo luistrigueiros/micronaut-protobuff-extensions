@@ -2,6 +2,7 @@ package io.micronaut
 
 import com.example.wire.Example
 import groovy.transform.CompileStatic
+import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Consumes
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -25,7 +26,7 @@ class SampleController {
 
     @Post(value = "/nearby", produces = ProtobufferCodec.PROTOBUFFER_ENCODED)
     @Consumes(ProtobufferCodec.PROTOBUFFER_ENCODED)
-    Example.GeoPoint suggestVisitNearBy(Example.GeoPoint point) {
+    Example.GeoPoint suggestVisitNearBy(@Body Example.GeoPoint point) {
         DUBLIN
     }
 

@@ -1,11 +1,9 @@
 package io.micronaut
 
 import com.example.wire.Example
-import spock.lang.Ignore
 import spock.lang.Unroll
 
 class SimpleHttpGetSpec extends BaseSpec {
-    @Ignore
     @Unroll
     void "sample city should be dublin/using sample controller"(String url) {
         when:'The message is requested from the sever=[#url]'
