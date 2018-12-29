@@ -1,5 +1,6 @@
 package io.micronaut.http.codec;
 
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 
 import java.lang.reflect.Method;
@@ -7,6 +8,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProtobufferBuilderCreator {
+
+    public final static ExtensionRegistry extensionRegistry = ExtensionRegistry.newInstance();
+
     private static final ConcurrentHashMap<Class<?>, Method> methodCache = new ConcurrentHashMap<>();
 
     /**

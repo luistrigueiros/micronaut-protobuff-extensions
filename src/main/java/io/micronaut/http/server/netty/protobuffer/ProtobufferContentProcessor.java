@@ -1,5 +1,6 @@
 package io.micronaut.http.server.netty.protobuffer;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.micronaut.core.async.subscriber.TypedSubscriber;
 import io.micronaut.core.reflect.ClassUtils;
@@ -103,7 +104,12 @@ public class ProtobufferContentProcessor extends AbstractHttpContentProcessor<Me
 
     @Override
     protected void doOnComplete() {
-        message = builder.build();
-        super.doOnComplete();
+        try {
+            builder.mergeFrom(byteArrayOutputStream.toByteArray(), ProtobufferBuilderCreator.extensionRegistry);
+            message = builder.build();
+            super.doOnComplete();
+        }catch (InvalidProtocolBufferException e) {
+            super.doOnError(e);
+        }
     }
 }

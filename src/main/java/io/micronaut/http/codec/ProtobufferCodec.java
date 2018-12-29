@@ -18,8 +18,6 @@ import java.util.Optional;
 
 @Singleton
 public class ProtobufferCodec implements MediaTypeCodec {
-
-    private final ExtensionRegistry extensionRegistry = ExtensionRegistry.newInstance();
     /**
      * Protobuffer encoded data: application/x-protobuf.
      */
@@ -54,7 +52,7 @@ public class ProtobufferCodec implements MediaTypeCodec {
             if (type.hasTypeVariables()) {
                 throw new IllegalStateException("Not implemented yet!");
             } else {
-                builder.mergeFrom(inputStream, this.extensionRegistry);
+                builder.mergeFrom(inputStream, ProtobufferBuilderCreator.extensionRegistry);
                 return type.getType().cast(builder.build());
             }
         } catch (Exception e) {
