@@ -2,7 +2,6 @@ package io.micronaut
 
 import com.example.wire.Example
 import com.google.protobuf.Message
-import io.micronaut.Constant
 import io.micronaut.context.ApplicationContext
 import io.micronaut.http.codec.ProtobufferCodec
 import io.micronaut.runtime.server.EmbeddedServer
