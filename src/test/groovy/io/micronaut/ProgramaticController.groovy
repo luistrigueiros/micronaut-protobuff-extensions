@@ -2,13 +2,9 @@ package io.micronaut
 
 import com.example.wire.Example
 import groovy.transform.CompileStatic
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Post
 import io.micronaut.http.codec.ProtobufferCodec
 
-@Controller
 @CompileStatic
 class ProgramaticController {
     public static Example.GeoPoint DUBLIN = Example.GeoPoint.newBuilder()
@@ -16,7 +12,7 @@ class ProgramaticController {
             .setLng(-6.266155D)
             .build()
 
-    @Get(value = "/city", processes = ProtobufferCodec.PROTOBUFFER_ENCODED)
+    @Get(processes = ProtobufferCodec.PROTOBUFFER_ENCODED)
     Example.GeoPoint city() {
         DUBLIN
     }
