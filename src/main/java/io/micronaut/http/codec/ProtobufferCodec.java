@@ -1,6 +1,5 @@
 package io.micronaut.http.codec;
 
-import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import io.micronaut.core.io.buffer.ByteBuffer;
 import io.micronaut.core.io.buffer.ByteBufferFactory;
