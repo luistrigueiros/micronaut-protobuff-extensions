@@ -3,12 +3,12 @@ package io.micronaut
 import com.example.wire.Example
 import spock.lang.Unroll
 
-class SimpleHttpGetSpec extends BaseSpec {
+class ProgramacticControllerSpec extends BaseSpec {
 
-    String url = embeddedServer.getURL().toString() + '/city'
+    String url = embeddedServer.getURL().toString() + '/town'
 
     @Unroll
-    void "sample city should be dublin/using sample controller"() {
+    void "sample city should be dublin/using programatic controller controller"() {
         when:'The message is requested from the sever=[#url]'
             def response = getMessage(url, Example.GeoPoint.class)
         and:'The message is parser'

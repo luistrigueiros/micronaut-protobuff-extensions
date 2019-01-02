@@ -6,8 +6,10 @@ import spock.lang.Unroll
 
 class SimpleHttpPostSpec extends BaseSpec {
 
+    String url = embeddedServer.getURL().toString() + '/nearby'
+
     @Unroll
-    void "near by Dublin should be Dublin"(String url) {
+    void "near by Dublin should be Dublin"() {
         setup:
             Message message = SampleController.DUBLIN
         when:'The message is posted to the server=[#url]'
@@ -15,8 +17,6 @@ class SimpleHttpPostSpec extends BaseSpec {
         and:'The message is parsed'
             Example.GeoPoint city = Example.GeoPoint.parseFrom(response)
         then:'Should be Dublin'
-        SampleController.DUBLIN == city
-        where:
-            url = embeddedServer.getURL().toString() + '/nearby'
+            SampleController.DUBLIN == city
     }
 }
