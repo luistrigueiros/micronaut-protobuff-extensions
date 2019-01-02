@@ -18,14 +18,12 @@ class SampleController {
             .setLng(-6.266155D)
             .build()
 
-    @Get(value = "/city", produces = ProtobufferCodec.PROTOBUFFER_ENCODED)
-    @Consumes(ProtobufferCodec.PROTOBUFFER_ENCODED)
+    @Get(value = "/city", processes = ProtobufferCodec.PROTOBUFFER_ENCODED)
     Example.GeoPoint city() {
         DUBLIN
     }
 
-    @Post(value = "/nearby", produces = ProtobufferCodec.PROTOBUFFER_ENCODED)
-    @Consumes(ProtobufferCodec.PROTOBUFFER_ENCODED)
+    @Post(value = "/nearby", processes = ProtobufferCodec.PROTOBUFFER_ENCODED)
     Example.GeoPoint suggestVisitNearBy(@Body Example.GeoPoint point) {
         DUBLIN
     }
