@@ -1,7 +1,6 @@
 package io.micronaut
 
 import com.example.wire.Example
-import com.google.protobuf.Message
 
 class SimpleHttpPostSpec extends BaseSpec {
 
@@ -9,7 +8,7 @@ class SimpleHttpPostSpec extends BaseSpec {
 
     void "near by Dublin should be Dublin"() {
         setup:
-            Message message = SampleController.DUBLIN
+            Example.GeoPoint message = SampleController.DUBLIN
         when:'The message is posted to the server=[#url]'
             def response = postMessage(url, message)
         and:'The message is parsed'
