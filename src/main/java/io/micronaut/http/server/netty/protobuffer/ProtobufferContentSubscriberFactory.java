@@ -10,9 +10,9 @@ import io.micronaut.http.server.netty.configuration.NettyHttpServerConfiguration
 
 import javax.inject.Singleton;
 
-@Consumes({ProtobufferCodec.PROTOBUFFER_ENCODED})
-@Singleton
-@Internal
+//@Consumes({ProtobufferCodec.PROTOBUFFER_ENCODED})
+//@Singleton
+//@Internal
 public class ProtobufferContentSubscriberFactory implements HttpContentSubscriberFactory {
 
     private final NettyHttpServerConfiguration configuration;
