@@ -18,7 +18,6 @@ abstract class BaseSpec extends Specification {
 
     byte[] getMessage(String url, Class aClass) {
         Request.Get(url)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ProtobufferCodec.PROTOBUFFER_ENCODED)
                 .addHeader(ProtobufferCodec.X_PROTOBUF_MESSAGE_HEADER, aClass.name)
                 .addHeader(HttpHeaders.ACCEPT, ProtobufferCodec.PROTOBUFFER_ENCODED)
                 .execute()
