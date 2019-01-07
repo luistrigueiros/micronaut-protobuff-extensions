@@ -17,19 +17,25 @@ public class ProtobufferBuilderCreator {
      * Create a new {@code Message.Builder} instance for the given class.
      * <p>This method uses a ConcurrentHashMap for caching method lookups.
      */
-    public static Optional<Message.Builder> getMessageBuilder(Class<? extends Message> clazz)  {
-        Message.Builder builder;
+    public static Optional<Message.Builder> getMessageBuilder(Class<? extends Message> clazz) {
         try {
-            Method method = methodCache.get(clazz);
-            if (method == null) {
-                method = clazz.getMethod("newBuilder");
-                methodCache.put(clazz, method);
-            }
-            builder = (Message.Builder) method.invoke(clazz);
-        }catch (Throwable throwable) {
+            return createBuilder(clazz);
+        } catch (Throwable throwable) {
             return Optional.empty();
         }
-        return Optional.ofNullable(builder);
+    }
+
+    private static Optional<Message.Builder> createBuilder(Class<? extends Message> clazz) throws Exception {
+        return Optional.of ((Message.Builder) getMethod(clazz).invoke(clazz));
+    }
+
+    private static Method getMethod(Class<? extends Message> clazz) throws NoSuchMethodException {
+        Method method = methodCache.get(clazz);
+        if (method == null) {
+            method = clazz.getMethod("newBuilder");
+            methodCache.put(clazz, method);
+        }
+        return method;
     }
 
 }
